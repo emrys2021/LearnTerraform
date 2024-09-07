@@ -1,0 +1,95 @@
+#cloud-config
+package_update: true
+packages:
+  - expect
+write_files:
+      - path: /root/v2ray_install.expect
+        permissions: '0755'
+        content: |
+          #!/usr/bin/expect -f          
+          # 设置每个expect命令等待的超时时间
+          set timeout 1200
+
+          # log_file /root/expect.log # expect日志同样记录在/var/log/cloud-init-output.log
+          # log_user 0  # 控制expect是否将输出显示在标准输出，目前没啥用
+          # exp_internal 1  # 启用expect的内部调试输出，目前没啥用
+
+          ### 启动v2ray脚本
+          spawn bash /root/v2ray.sh
+
+          # 处理菜单目录
+          expect "请输入数字："
+          send "1\r"
+
+          # 处理时间同步
+          expect "请确认时间是否准确,误差范围±3分钟(Y/N):"
+          send "y\r"
+
+          # 处理域名
+          expect "请输入你的域名信息(eg:www.wulabing.com):"
+          # （可选）terraform使用file provisioner将nodes.txt传到虚拟机实例上
+          # set node_name [exec tail -n 1 /root/nodes.txt]
+          send "${node_name}.jackyleo.online\r"
+
+          # 处理tls端口
+          expect "请输入连接端口（default:443）:"
+          send "\r"
+
+          # 处理链接类型
+          expect "请输入："
+          send "1\r"
+
+          # 处理tls版本
+          expect "请输入："
+          send "1\r"
+
+          # 捕获其他交互
+          expect eof
+
+          ### 启动bbr脚本
+          spawn bash /root/bbr.sh
+
+          # 按任意键启动bbr脚本
+          expect "Press any key to start...or Press Ctrl+C to cancel"
+          send "\r"
+
+          # 捕获其他交互
+          expect eof
+
+          ### 启动x-ui脚本
+          spawn bash /root/x-ui.sh
+
+          # 允许修改端口和账户密码
+          # 在expect中，'[' 和 ']' 是特殊字符，代表正则表达式中的字符集合，需要使用\\\转义
+          expect "确认是否继续,如选择n则跳过本次端口与账户密码设定\\\[y/n\\\]:"
+          send "y\r"
+
+          # 默认账户admin
+          expect "请设置您的账户名:"
+          send "\r"
+
+          # 默认密码admin
+          expect "请设置您的账户密码:"
+          send "\r"
+
+          # 默认端口54321
+          expect "请设置面板访问端口:"
+          send "\r"
+
+          # 捕获其他交互
+          expect eof
+
+runcmd:
+  - cd /root/
+  - wget -N --no-check-certificate -q -O v2ray.sh "https://raw.githubusercontent.com/wulabing/V2Ray_ws-tls_bash_onekey/master/install.sh"
+  - wget --no-check-certificate -O bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh
+  - wget --no-check-certificate -O x-ui.sh https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh
+  - chmod +x v2ray.sh bbr.sh x-ui.sh
+  - /usr/bin/expect v2ray_install.expect
+  - mv /v2ray_info.inf /root/v2ray_info.inf
+  - apt install sqlite3 -y
+  - echo "设置x-ui的BasePath及证书："
+  - sqlite3 /etc/x-ui/x-ui.db "INSERT INTO settings (key, value) VALUES ('webBasePath', '/v2ray/');"
+  - sqlite3 /etc/x-ui/x-ui.db "INSERT INTO settings (key, value) VALUES ('webCertFile', '/data/v2ray.crt');"
+  - sqlite3 /etc/x-ui/x-ui.db "INSERT INTO settings (key, value) VALUES ('webKeyFile', '/data/v2ray.key');"
+  - x-ui restart
