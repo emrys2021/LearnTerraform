@@ -21,7 +21,7 @@
 - 下载改版x-ui脚本：https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh
 - 执行expect脚本
 - 将生成在根目录的v2ray_info.inf文件移动到/root目录
-- 安装sqlite3，将x-ui相关配置写入x-uis数据库，重启x-ui
+- 安装sqlite3，将x-ui相关配置写入x-ui数据库，重启x-ui
 
 ### expect脚本定义了自动化安装v2ray、bbr和x-ui的过程（自动应答）：
 

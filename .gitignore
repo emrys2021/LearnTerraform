@@ -1,0 +1,10 @@
+
+Vultr_V2ray/.terraform.lock.hcl
+Vultr_V2ray/.terraform/providers/registry.terraform.io/aliyun/alicloud/1.233.0/windows_386/terraform-provider-alicloud_v1.233.0.exe
+Vultr_V2ray/.terraform/providers/registry.terraform.io/hashicorp/template/2.2.0/windows_386/terraform-provider-template_v2.2.0_x4.exe
+Vultr_V2ray/.terraform/providers/registry.terraform.io/vultr/vultr/2.15.1/windows_386/CHANGELOG.md
+Vultr_V2ray/.terraform/providers/registry.terraform.io/vultr/vultr/2.15.1/windows_386/LICENSE
+Vultr_V2ray/.terraform/providers/registry.terraform.io/vultr/vultr/2.15.1/windows_386/README.md
+Vultr_V2ray/.terraform/providers/registry.terraform.io/vultr/vultr/2.15.1/windows_386/terraform-provider-vultr_v2.15.1.exe
+Vultr_V2ray/terraform.tfstate
+Vultr_V2ray/terraform.tfstate.backup

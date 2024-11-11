@@ -29,6 +29,7 @@ write_files:
           expect "请输入你的域名信息(eg:www.wulabing.com):"
           # （可选）terraform使用file provisioner将nodes.txt传到虚拟机实例上
           # set node_name [exec tail -n 1 /root/nodes.txt]
+          #* 这里的node_name之后在cloudinit_template渲染出最终的数据
           send "${node_name}.jackyleo.online\r"
 
           # 处理tls端口
